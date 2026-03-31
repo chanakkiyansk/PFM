@@ -21,6 +21,7 @@ export default function Sidebar() {
         <Link to="/accounts">👨‍👩‍👧 Accounts</Link>
         <Link to="/insights">🤖 Insights</Link>
         <Link to="/predictions">🔮 Predictions</Link>
+        <Link to="/chat">🤖 Chatbot</Link>
       </nav>
 
       <button onClick={handleLogout}>

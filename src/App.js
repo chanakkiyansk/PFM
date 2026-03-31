@@ -11,7 +11,7 @@ import Accounts from "./pages/Accounts";
 import Insights from "./components/Insights";
 import Predictions from "./pages/Predictions";
 import supabase from "./supabaseClient";
-
+import Chatbot from "./pages/Chatbot";
 function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,6 +43,7 @@ function App() {
             {!user ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/chat" element={<Chatbot />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
