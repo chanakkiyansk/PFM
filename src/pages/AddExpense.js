@@ -1,19 +1,29 @@
 import React, { useState } from "react";
-import supabase from "../supabaseClient";
 import "../styles/dashboard.css";
+
+const categories = [
+    "Travel",
+    "Rent",
+    "Gas",
+    "Utilities",
+    "Grocery",
+    "Shopping",
+    "Food",
+    "Entertainment",
+    "Health",
+    "Other"
+];
 
 const AddExpense = () => {
     const [amount, setAmount] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState("Travel");
     const [date, setDate] = useState("");
 
-    // ❌ NO DB INSERT HERE (IMPORTANT)
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         const entry = {
-            id: Date.now(),
+            id: Date.now() + Math.random(),
             type: "expense",
             amount: Number(amount),
             category,
@@ -24,15 +34,14 @@ const AddExpense = () => {
         };
 
         let local = JSON.parse(localStorage.getItem("expenses")) || [];
-
-        // ✅ save ONLY locally
         local.push(entry);
+
         localStorage.setItem("expenses", JSON.stringify(local));
 
         alert("Expense Added ✅");
 
         setAmount("");
-        setCategory("");
+        setCategory("Travel");
         setDate("");
     };
 
@@ -41,6 +50,7 @@ const AddExpense = () => {
             <h2>Add Expense</h2>
 
             <form onSubmit={handleSubmit} className="form-box">
+
                 <input
                     type="number"
                     placeholder="Amount"
@@ -48,12 +58,15 @@ const AddExpense = () => {
                     onChange={(e) => setAmount(e.target.value)}
                 />
 
-                <input
-                    type="text"
-                    placeholder="Category"
+                {/* SAME UI POSITION — just dropdown now */}
+                <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                />
+                >
+                    {categories.map((cat, index) => (
+                        <option key={index} value={cat}>{cat}</option>
+                    ))}
+                </select>
 
                 <input
                     type="date"

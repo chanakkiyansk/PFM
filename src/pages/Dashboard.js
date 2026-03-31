@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import supabase from "../supabaseClient";
 import Graph from "../components/Graph";
 import Calendar from "../components/Calendar";
@@ -11,36 +11,27 @@ const Dashboard = () => {
   const [filter, setFilter] = useState("month");
   const [view, setView] = useState("all");
 
-  // 🔥 FETCH FROM DB + LOCAL
-  const fetchData = async () => {
-    const { data: dbData } = await supabase
-      .from("transactions")
-      .select("*");
-
-    const local = JSON.parse(localStorage.getItem("expenses")) || [];
-
-    const combined = [...(dbData || []), ...local];
-    setData(combined);
-
-    calculate(combined);
+  // 🔥 CACHE LOCAL DATA
+  const getLocalData = () => {
+    return JSON.parse(localStorage.getItem("expenses")) || [];
   };
 
-  // 🔥 CALCULATE
-  const calculate = (dataset) => {
+  // 🔥 CALCULATE (MEMOIZED)
+  const calculate = useCallback((dataset, currentFilter) => {
     let filtered = dataset;
     const now = new Date();
 
-    if (filter === "day") {
+    if (currentFilter === "day") {
       filtered = dataset.filter(
         (i) => new Date(i.date).toDateString() === now.toDateString()
       );
-    } else if (filter === "month") {
+    } else if (currentFilter === "month") {
       filtered = dataset.filter(
         (i) =>
           new Date(i.date).getMonth() === now.getMonth() &&
           new Date(i.date).getFullYear() === now.getFullYear()
       );
-    } else if (filter === "year") {
+    } else if (currentFilter === "year") {
       filtered = dataset.filter(
         (i) => new Date(i.date).getFullYear() === now.getFullYear()
       );
@@ -56,52 +47,54 @@ const Dashboard = () => {
 
     setIncome(inc);
     setExpense(exp);
-  };
+  }, []);
 
-  // 🔥 AUTO SYNC + CLEAR LOCAL
-  const syncData = async () => {
-    let local = JSON.parse(localStorage.getItem("expenses")) || [];
+  // 🔥 FETCH DATA
+  const fetchData = useCallback(async () => {
+    const { data: dbData } = await supabase
+      .from("transactions")
+      .select("*");
 
+    const local = getLocalData();
+    const combined = [...(dbData || []), ...local];
+
+    setData(combined);
+    calculate(combined, filter);
+  }, [calculate, filter]);
+
+  // 🔥 SYNC DATA (OPTIMIZED)
+  const syncData = useCallback(async () => {
+    const local = getLocalData();
     const unsynced = local.filter(item => item.synced === false);
 
     if (unsynced.length === 0) return;
-
-    console.log("🔄 Syncing data...");
 
     const { error } = await supabase
       .from("transactions")
       .insert(unsynced);
 
     if (!error) {
-      // 🔥 CLEAR LOCAL AFTER SUCCESS
       localStorage.setItem("expenses", JSON.stringify([]));
-      console.log("✅ Synced & cleared localStorage");
-
-      fetchData(); // refresh UI
-    } else {
-      console.log("❌ Sync failed:", error.message);
+      fetchData(); // refresh once
     }
-  };
+  }, [fetchData]);
 
+  // 🔥 INITIAL LOAD
   useEffect(() => {
     fetchData();
 
-    if (navigator.onLine) {
-      syncData();
-    }
+    if (navigator.onLine) syncData();
 
     window.addEventListener("online", syncData);
+    return () => window.removeEventListener("online", syncData);
+  }, [fetchData, syncData]);
 
-    return () => {
-      window.removeEventListener("online", syncData);
-    };
-  }, []);
-
+  // 🔥 FILTER CHANGE ONLY RE-CALCULATE
   useEffect(() => {
-    calculate(data);
-  }, [filter]);
+    calculate(data, filter);
+  }, [filter, data, calculate]);
 
-  // 🔥 FILTER VIEW
+  // 🔥 VIEW FILTER
   const getDisplayData = () => {
     if (view === "income") return data.filter(d => d.type === "income");
     if (view === "expense") return data.filter(d => d.type === "expense");
@@ -111,12 +104,10 @@ const Dashboard = () => {
   return (
     <div style={{ padding: "20px" }}>
 
-      {/* CASH FLOW */}
       <h2>Cash Flow 💰</h2>
 
       <div style={{ display: "flex", gap: "20px" }}>
 
-        {/* CARDS */}
         <div style={{ flex: 3 }}>
           <div className="card-container">
 
@@ -135,7 +126,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* FILTER */}
         <div style={{
           flex: 1,
           background: "#111",
@@ -157,14 +147,12 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* 🔥 DATA + GRAPH */}
       <div style={{
         display: "flex",
         marginTop: "30px",
         gap: "20px"
       }}>
 
-        {/* DATA PANEL */}
         <div style={{
           flex: 2,
           background: "#f5f5f5",
@@ -189,13 +177,12 @@ const Dashboard = () => {
               justifyContent: "space-between",
               fontSize: "13px"
             }}>
-              <span>{item.category}</span>
+              <span>{item.category || "Other"}</span>
               <span>₹{item.amount}</span>
             </div>
           ))}
         </div>
 
-        {/* GRAPH */}
         <div style={{
           flex: 1,
           background: "#111",
@@ -207,7 +194,6 @@ const Dashboard = () => {
 
       </div>
 
-      {/* 🔥 CALENDAR */}
       <div style={{
         display: "flex",
         marginTop: "20px",

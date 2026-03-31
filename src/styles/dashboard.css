@@ -1,116 +1,88 @@
 /* ===== MAIN LAYOUT ===== */
 .dashboard {
   display: flex;
-  height: 100vh;
   font-family: Arial, sans-serif;
+}
+
+.main {
+  margin-left: 240px;
+  /* sidebar width */
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  padding: 20px;
+  background: #f5f7fa;
 }
 
 /* ===== SIDEBAR ===== */
 .sidebar {
+  width: 240px;
   height: 100vh;
-  width: 220px;
-  background: linear-gradient(180deg, #141e30, #243b55);
+  background: linear-gradient(180deg, #020617, #0f172a);
+  padding: 20px;
   color: white;
+  position: fixed;
   display: flex;
   flex-direction: column;
-  padding: 20px 15px;
-  transition: 0.3s;
+  justify-content: space-between;
 }
 
-/* COLLAPSE */
-.sidebar.closed {
-  width: 70px;
-}
-
-.sidebar.open {
-  width: 220px;
-}
-
-/* TOGGLE BUTTON */
-.toggle-btn {
-  font-size: 20px;
-  cursor: pointer;
+.sidebar h2 {
+  font-size: 22px;
   margin-bottom: 20px;
 }
 
-/* LOGO */
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-/* MENU */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin: 12px 0;
-}
-
-/* LINKS */
-.sidebar a {
+.sidebar-nav {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #ddd;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar a {
   text-decoration: none;
+  color: #cbd5f5;
   padding: 10px 12px;
   border-radius: 8px;
   transition: 0.3s;
 }
 
-/* HOVER */
 .sidebar a:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: #1e293b;
+  color: white;
   transform: translateX(5px);
 }
 
-/* ACTIVE */
-.sidebar a.active {
+.sidebar a:active {
   background: #00adb5;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  background: #00adb5;
+  border: none;
+  border-radius: 8px;
   color: white;
-  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* BOTTOM */
-.bottom {
-  font-size: 14px;
-  color: #ccc;
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+.sidebar button:hover {
+  background: #019ca3;
 }
 
-/* ===== MAIN CONTENT ===== */
-.main {
+/* ===== CARDS ===== */
+.card-container {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
   flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background: #f5f7fa;
-}
-
-/* ===== CASH FLOW ===== */
-.cashflow-box {
-  background: #ffffff;
+  background: #1e293b;
   padding: 20px;
   border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.flow {
-  display: flex;
-  gap: 10px;
-  font-size: 18px;
-}
-
-.balance {
-  color: green;
+  color: white;
+  text-align: center;
   font-weight: bold;
 }
 
@@ -129,22 +101,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* TOGGLE */
-.toggle button {
-  margin-right: 10px;
-  padding: 6px 12px;
-  border: none;
-  background: #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.toggle button:hover {
-  background: #00adb5;
-  color: white;
-}
-
-/* ITEMS */
 .item {
   display: flex;
   justify-content: space-between;
@@ -160,7 +116,7 @@
   gap: 20px;
 }
 
-/* GRAPH + CALENDAR BOX */
+/* ===== GRAPH & CALENDAR ===== */
 .graph,
 .calendar {
   background: #ffffff;
@@ -170,165 +126,6 @@
 }
 
 /* ===== CALENDAR ===== */
-
-/* HEADER DAYS */
-.days-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-/* GRID */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-}
-
-/* DAY BOX */
-.day {
-  padding: 10px;
-  text-align: center;
-  border-radius: 6px;
-  background: #eee;
-}
-
-/* HIGHLIGHT EXPENSE DAY */
-.day.expense {
-  background: #ff7675;
-  color: white;
-}
-
-/* ===== FORM CONTAINER ===== */
-.form-container {
-  max-width: 400px;
-  margin: auto;
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-/* TITLE */
-.form-container h2 {
-  margin-bottom: 20px;
-}
-
-/* TOGGLE BUTTONS */
-.type-toggle {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.type-toggle button {
-  padding: 8px 15px;
-  margin: 0 5px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #ddd;
-}
-
-/* ACTIVE BUTTON */
-.active-btn {
-  background: #00adb5;
-  color: white;
-}
-
-/* FORM */
-.form-box {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* INPUTS */
-.form-box input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-/* SUBMIT BUTTON */
-.submit-btn {
-  padding: 10px;
-  background: #00adb5;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background: #007b80;
-}
-
-.logout-btn {
-  float: right;
-  padding: 6px 12px;
-  background: #ee5253;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.logout-btn:hover {
-  background: #c0392b;
-}
-
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* chart top */
-.graph {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-/* calendar below */
-.calendar {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* chart top */
-.graph {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-/* calendar below */
-.calendar {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.today {
-  background: #00adb5;
-  color: white;
-  font-weight: bold;
-}
-
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -345,22 +142,24 @@
   cursor: pointer;
 }
 
+.days-header,
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
 }
 
-.header-day {
+.days-header {
   font-weight: bold;
-  background: #ddd;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .day {
   padding: 10px;
-  background: #eee;
-  border-radius: 6px;
   text-align: center;
+  border-radius: 6px;
+  background: #eee;
   cursor: pointer;
   min-height: 40px;
 }
@@ -370,23 +169,101 @@
   color: white;
 }
 
+.day.expense {
+  background: #ff7675;
+  color: white;
+}
+
 .today {
   background: #00adb5;
   color: white;
   font-weight: bold;
 }
 
-.card-container {
-  display: flex;
-  gap: 20px;
+/* ===== FORM ===== */
+.form-container {
+  max-width: 400px;
+  margin: auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.card {
-  flex: 1;
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 10px;
+.form-container h2 {
+  margin-bottom: 20px;
+}
+
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-box input,
+.form-box select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+}
+
+/* SELECT CUSTOM */
+.form-box select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2300adb5' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+.form-box select:focus,
+.form-box input:focus {
+  border-color: #00adb5;
+  box-shadow: 0 0 5px rgba(0, 173, 181, 0.3);
+}
+
+/* BUTTON */
+.submit-btn {
+  padding: 10px;
+  background: #00adb5;
   color: white;
-  text-align: center;
-  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #007b80;
+}
+
+/* LOGOUT BUTTON (OPTIONAL) */
+.logout-btn {
+  float: right;
+  padding: 6px 12px;
+  background: #ee5253;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+.main {
+  margin-left: 240px;
+  /* SAME as sidebar width */
+}
+
+.sidebar.closed+.main {
+  margin-left: 70px;
+}
+
+.sidebar.open+.main {
+  margin-left: 240px;
 }

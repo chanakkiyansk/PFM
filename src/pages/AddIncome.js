@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import "../styles/dashboard.css";
 
+const categories = [
+    "Salary",
+    "Bonus",
+    "Freelance",
+    "Investment",
+    "Gift",
+    "Other"
+];
+
 const AddIncome = () => {
     const [amount, setAmount] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState("Salary");
     const [date, setDate] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const entry = {
-            id: Date.now(),
+            id: Date.now() + Math.random(),
             type: "income",
             amount: Number(amount),
             category,
@@ -28,7 +37,7 @@ const AddIncome = () => {
         alert("Income Added ✅");
 
         setAmount("");
-        setCategory("");
+        setCategory("Salary");
         setDate("");
     };
 
@@ -37,6 +46,7 @@ const AddIncome = () => {
             <h2>Add Income</h2>
 
             <form onSubmit={handleSubmit} className="form-box">
+
                 <input
                     type="number"
                     placeholder="Amount"
@@ -44,12 +54,15 @@ const AddIncome = () => {
                     onChange={(e) => setAmount(e.target.value)}
                 />
 
-                <input
-                    type="text"
-                    placeholder="Category"
+                {/* 🔥 DROPDOWN */}
+                <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                />
+                >
+                    {categories.map((cat, index) => (
+                        <option key={index} value={cat}>{cat}</option>
+                    ))}
+                </select>
 
                 <input
                     type="date"

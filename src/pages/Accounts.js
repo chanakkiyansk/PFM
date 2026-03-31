@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../supabaseClient";
-import "../styles/dashboard.css";
 
 const Accounts = () => {
     const [email, setEmail] = useState("");
     const [members, setMembers] = useState([]);
 
-    const familyId = localStorage.getItem("family_id");
+    const family_id = localStorage.getItem("family_id") || "FAM001";
 
-    // ✅ FETCH MEMBERS
+    // 🔥 FETCH MEMBERS
     const fetchMembers = async () => {
         const { data, error } = await supabase
-            .from("members")
+            .from("family_members")
             .select("*")
-            .eq("family_id", familyId);
+            .eq("family_id", family_id);
 
         if (!error) {
             setMembers(data);
@@ -24,45 +23,52 @@ const Accounts = () => {
         fetchMembers();
     }, []);
 
-    // ✅ ADD MEMBER
+    // 🔥 ADD MEMBER
     const addMember = async () => {
         if (!email) return alert("Enter email");
 
-        const { error } = await supabase.from("members").insert([
-            {
-                family_id: familyId,
-                email: email
-            }
-        ]);
+        const { error } = await supabase
+            .from("family_members")
+            .insert([
+                {
+                    family_id,
+                    email
+                }
+            ]);
 
         if (!error) {
-            alert("Member Added ✅");
+            alert("Member added ✅");
             setEmail("");
-            fetchMembers(); // refresh
+            fetchMembers();
         } else {
-            alert("Error adding member");
+            alert(error.message);
         }
     };
 
-    // ✅ REMOVE MEMBER
+    // 🔥 DELETE MEMBER
     const removeMember = async (id) => {
-        await supabase.from("members").delete().eq("id", id);
+        await supabase
+            .from("family_members")
+            .delete()
+            .eq("id", id);
+
         fetchMembers();
     };
 
     return (
-        <div>
-
+        <div style={{ padding: "20px" }}>
             <h2>👨‍👩‍👧 Family Management</h2>
 
-            <div style={{
-                display: "flex",
-                gap: "20px",
-                marginTop: "20px"
-            }}>
+            <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
 
-                {/* LEFT - ADD MEMBER */}
-                <div className="card" style={{ flex: 1 }}>
+                {/* ADD MEMBER */}
+                <div style={{
+                    flex: 1,
+                    background: "#1e293b",
+                    padding: "20px",
+                    borderRadius: "10px",
+                    color: "white"
+                }}>
                     <h3>Add Member</h3>
 
                     <input
@@ -70,15 +76,33 @@ const Accounts = () => {
                         placeholder="Enter email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        style={{ width: "100%", marginTop: "10px", padding: "8px" }}
                     />
 
-                    <button style={{ marginTop: "10px" }} onClick={addMember}>
+                    <button
+                        onClick={addMember}
+                        style={{
+                            marginTop: "10px",
+                            padding: "8px",
+                            width: "100%",
+                            background: "#00adb5",
+                            border: "none",
+                            color: "white",
+                            borderRadius: "6px"
+                        }}
+                    >
                         Add Member
                     </button>
                 </div>
 
-                {/* RIGHT - MEMBER LIST */}
-                <div className="card" style={{ flex: 2 }}>
+                {/* MEMBER LIST */}
+                <div style={{
+                    flex: 2,
+                    background: "#1e293b",
+                    padding: "20px",
+                    borderRadius: "10px",
+                    color: "white"
+                }}>
                     <h3>Family Members</h3>
 
                     {members.length === 0 ? (
@@ -88,14 +112,22 @@ const Accounts = () => {
                             <div key={m.id} style={{
                                 display: "flex",
                                 justifyContent: "space-between",
+                                marginTop: "10px",
+                                background: "#0f172a",
                                 padding: "10px",
-                                borderBottom: "1px solid #334155"
+                                borderRadius: "6px"
                             }}>
                                 <span>{m.email}</span>
 
                                 <button
-                                    style={{ background: "red" }}
                                     onClick={() => removeMember(m.id)}
+                                    style={{
+                                        background: "red",
+                                        border: "none",
+                                        color: "white",
+                                        padding: "5px 10px",
+                                        borderRadius: "5px"
+                                    }}
                                 >
                                     Remove
                                 </button>
