@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../supabaseClient";
-import "../styles/dashboard.css";
 
-const Login = ({ setAuth }) => {
+const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -11,27 +10,25 @@ const Login = ({ setAuth }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
 
         if (error) {
             alert(error.message);
-        } else {
-            localStorage.setItem("isAuth", "true");
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("family_id", "FAM001");
-
-            setAuth(true);
-            navigate("/");
         }
+        // ❌ REMOVE navigate("/")
+        // ✅ App.js will auto-redirect after login
     };
 
     // 🔥 GOOGLE LOGIN
-    const handleGoogleLogin = async () => {
+    const handleGoogle = async () => {
         await supabase.auth.signInWithOAuth({
             provider: "google",
+            options: {
+                redirectTo: "http://localhost:3000"
+            }
         });
     };
 
@@ -43,41 +40,26 @@ const Login = ({ setAuth }) => {
                 <input
                     type="email"
                     placeholder="Email"
-                    value={email}
+                    value={email} // ✅ FIX
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
                 <input
                     type="password"
                     placeholder="Password"
-                    value={password}
+                    value={password} // ✅ FIX
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button className="submit-btn">Login</button>
+                <button type="submit">Login</button>
             </form>
 
-            {/* GOOGLE BUTTON */}
-            <button
-                onClick={handleGoogleLogin}
-                style={{
-                    marginTop: "15px",
-                    background: "#4285F4",
-                    color: "white",
-                    padding: "10px",
-                    border: "none",
-                    borderRadius: "6px",
-                    width: "100%",
-                }}
-            >
+            <button onClick={handleGoogle} style={{ marginTop: "10px" }}>
                 Sign in with Google 🚀
             </button>
 
-            <p
-                style={{ marginTop: "15px", cursor: "pointer", color: "#00adb5" }}
-                onClick={() => navigate("/signup")}
-            >
-                Don't have an account? Signup
+            <p onClick={() => navigate("/signup")} style={{ cursor: "pointer" }}>
+                Signup
             </p>
         </div>
     );
