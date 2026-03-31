@@ -10,30 +10,33 @@ import Signup from "./pages/Signup";
 import Accounts from "./pages/Accounts";
 import Insights from "./components/Insights";
 import Predictions from "./pages/Predictions";
-import supabase from "./supabaseClient";
 import Chatbot from "./pages/Chatbot";
+import supabase from "./supabaseClient";
+
 function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // 🔥 CHECK AUTH
     useEffect(() => {
-        const getUser = async () => {
-            const { data } = await supabase.auth.getUser();
-            setUser(data.user);
+        // 🔥 GET CURRENT SESSION
+        const getSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            setUser(data.session?.user || null);
             setLoading(false);
         };
 
-        getUser();
+        getSession();
 
-        // listen to auth changes (google login etc)
+        // 🔥 LISTEN TO AUTH CHANGES
         const { data: listener } = supabase.auth.onAuthStateChange(
             (event, session) => {
                 setUser(session?.user || null);
             }
         );
 
-        return () => listener.subscription.unsubscribe();
+        return () => {
+            listener.subscription.unsubscribe();
+        };
     }, []);
 
     if (loading) return <h2>Loading...</h2>;
@@ -43,13 +46,14 @@ function App() {
             {!user ? (
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/chat" element={<Chatbot />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/chat" element={<Chatbot />} />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             ) : (
                 <div className="dashboard">
                     <Sidebar />
+
                     <div className="main">
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
@@ -58,6 +62,7 @@ function App() {
                             <Route path="/accounts" element={<Accounts />} />
                             <Route path="/insights" element={<Insights />} />
                             <Route path="/predictions" element={<Predictions />} />
+                            <Route path="/chat" element={<Chatbot />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                     </div>

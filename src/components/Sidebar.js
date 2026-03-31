@@ -19,8 +19,7 @@ export default function Sidebar() {
         <Link to="/add">➖ Expense</Link>
         <Link to="/income">➕ Income</Link>
         <Link to="/accounts">👨‍👩‍👧 Accounts</Link>
-        <Link to="/insights">🤖 Insights</Link>
-        <Link to="/predictions">🔮 Predictions</Link>
+
         <Link to="/chat">🤖 Chatbot</Link>
       </nav>
 
