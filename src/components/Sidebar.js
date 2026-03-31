@@ -1,53 +1,41 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import supabase from "../supabaseClient";
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
+export default function Sidebar() {
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   return (
-    <div className={open ? "sidebar open" : "sidebar closed"}>
-      <div className="toggle-btn" onClick={() => setOpen(!open)}>☰</div>
+    <div style={{
+      width: "240px",
+      height: "100vh",
+      background: "#020617",
+      padding: "20px",
+      color: "white"
+    }}>
+      <h2>💰 PFM</h2>
 
-      <h2 className="logo">💰 {open && "PFM"}</h2>
+      <nav style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px",
+        marginTop: "20px"
+      }}>
+        <Link to="/">🏠 Dashboard</Link>
+        <Link to="/add">➖ Expense</Link>
+        <Link to="/income">➕ Income</Link>
+        <Link to="/accounts">👨‍👩‍👧 Accounts</Link>
+        <Link to="/insights">🤖 Insights</Link>
+        <Link to="/predictions">🔮 Predictions</Link>
 
-      <ul>
-        <li>
-          <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>
-            🏠 {open && "Dashboard"}
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink to="/income" className={({ isActive }) => isActive ? "active" : ""}>
-            💰 {open && "Income"}
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/insights"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            📊 {open && "Insights"}
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/add" className={({ isActive }) => isActive ? "active" : ""}>
-            ➕ {open && "Expense"}
-          </NavLink>
-        </li>
-      </ul>
-
-      <div
-        className="bottom"
-        onClick={() => {
-          localStorage.removeItem("isAuth");
-          window.location.reload();
-        }}
-      >
-        🚪 {open && "Logout"}
-      </div>
+        {/* 🔥 LOGOUT */}
+        <button onClick={handleLogout} style={{ marginTop: "20px" }}>
+          Logout 🚪
+        </button>
+      </nav>
     </div>
   );
-};
-
-export default Sidebar;
+}

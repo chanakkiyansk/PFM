@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import supabase from "../supabaseClient";
 import "../styles/dashboard.css";
 
 const AddIncome = () => {
@@ -7,20 +6,12 @@ const AddIncome = () => {
     const [category, setCategory] = useState("");
     const [date, setDate] = useState("");
 
-    const saveToDB = async (entry) => {
-        const { error } = await supabase
-            .from("transactions")
-            .insert([entry]);
-
-        if (error) console.log("DB ERROR:", error.message);
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         const entry = {
             id: Date.now(),
-            type: "income", // ✅ FIXED
+            type: "income",
             amount: Number(amount),
             category,
             date,
@@ -31,11 +22,6 @@ const AddIncome = () => {
 
         let local = JSON.parse(localStorage.getItem("expenses")) || [];
         local.push(entry);
-
-        if (navigator.onLine) {
-            await saveToDB(entry);
-            entry.synced = true;
-        }
 
         localStorage.setItem("expenses", JSON.stringify(local));
 
