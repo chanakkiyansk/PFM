@@ -1,0 +1,51 @@
+import React from "react";
+
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+}
+
+from "react-router-dom";
+
+
+import Dashboard from "./pages/Dashboard";
+import AddExpense from "./pages/AddExpense";
+
+const Accounts=()=><h1>Accounts Page</h1>;
+const InsightsPage=()=><h1>Insights Page</h1>;
+const Predictions=()=><h1>Predictions Page</h1>;
+
+function App() {
+  return (<Router> <div className="dashboard" > {
+      /* SAME layout wrapper */
+    }
+
+    <Sidebar /> {
+      /* ✅ NOW GLOBAL */
+    }
+
+    <div className="main" > <Routes> <Route path="/" element= {
+      <Dashboard />
+    }
+
+    /> <Route path="/accounts" element= {
+      <Accounts />
+    }
+
+    /> <Route path="/insights" element= {
+      <InsightsPage />
+    }
+
+    /> <Route path="/add" element= {
+      <AddExpense />
+    }
+
+    /> <Route path="/predictions" element= {
+      <Predictions />
+    }
+
+    /> </Routes> </div> </div> </Router>);
+}
+
+export default App;
